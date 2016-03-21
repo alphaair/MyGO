@@ -1,0 +1,37 @@
+#GO Windows开发环境搭建
+
+@(alphaair)[GO, IDE, VSCODE]
+
+--------------
+##1.开发环境选择
+- **Lite IDE** ：这个为GO专门开发的IDE最简单搭建的，直接下载安装包安装即可，*但是缺点就是不能调试*，所以作为备选。
+
+- **VsCode**：Visual Studio Code+GO+del 扩展，微软出的开源跨平台IDE，支持智能提示，跳转到定义等等，还可以单步调试，缺点就是都是刚出的新东西，不过也没有发现什么大问题。
+
+##2.安装
+
+###a.安装GO
+>直接从官方下载Windows的一键安装包即可，安装好后配置 GOROOT和GOPATH两个环境变理，`GOROOT`指定GO安装目录，`GOPATH`指向自己以后的GO语言工作目录。
+
+### b.安装Visual Studio Code
+- 从[Visual studio](http://www.visualstudio.com)官方网站下载Visual studio code，安装.
+- 执行`Extensions:install Extension`命令，选择安装`GO`扩展
+- 安装Github
+- 安装所需扩展：
+> go get -u -v github.com/nsf/gocode
+go get -u -v github.com/rogpeppe/godef
+go get -u -v github.com/golang/lint/golint
+go get -u -v github.com/lukehoban/go-find-references
+go get -u -v github.com/lukehoban/go-outline
+go get -u -v sourcegraph.com/sqs/goreturns
+go get -u -v golang.org/x/tools/cmd/gorename
+go get -u -v github.com/tpng/gopkgs
+go get -u -v github.com/newhook/go-symbols
+
+### c.安装Debugger调试器`dvl`
+- a.获取https://github.com/derekparker/delve.git源代码;
+- b.安装GCC编译器mingw-w64，此编译器在线安装包，国内可能无法下载，可以启动安装时通过%temp%的临时目录查看安装的下载地址，然后用迅雷下载，用修改hosts文件的方式指向本地安装即可;
+- c.将mingw-w64的bin目录加入环境变理`PATH`;
+- c.编译调式器`delve`，请确保相应的环境变量配置正确；
+
+
