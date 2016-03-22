@@ -73,4 +73,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
 debug
+src/github.com/
+src/9fans.net/
+src/sourcegraph.com/
+src/golang.org/
