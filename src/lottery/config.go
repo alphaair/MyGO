@@ -4,5 +4,5 @@ package lottery
 type Config struct {
      PredictPerson    int 
      MaxOnPerson      int
-     Prizes
+     Prizes           map[int] Prize
 }

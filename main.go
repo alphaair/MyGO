@@ -7,4 +7,5 @@ func main(){
     fmt.Println("Hello World,您好，世界!")
     
     gostudy.Variable()
+    
 }

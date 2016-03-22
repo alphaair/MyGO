@@ -5,7 +5,7 @@ package gostudy
 
 import "fmt"
 
-// GO变量语法，输出
+// Variable 函数是，GO变量语法
 func  Variable() {
     
     var num0 int = 3
