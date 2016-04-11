@@ -10,19 +10,27 @@ func PrimeNumber(max int) []int {
     
     for i := 3; i <= max; i++ {
         
-        isn := true
-        for j:=2; j<i; j++ {
-            if i % j == 0 {
-                isn = false
-                break
-            }
-        }
-        
-        if isn {
+        if IsPrimeNumber(i) {
             nums = append(nums,i)
         }
+        
     }
     
     return nums
     
+}
+
+// IsPrimeNumber验证指定的数字是否为素数 
+func IsPrimeNumber(num int) bool {
+    if num <=1 {
+        return false
+    }
+    
+    for i := 2; i<num; i++ {
+        if num % i == 0 {
+            return false
+        }
+    }
+    
+    return true
 }
