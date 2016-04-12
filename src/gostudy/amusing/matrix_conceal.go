@@ -32,7 +32,7 @@ func (m *MatrixConceal) Init() {
     for i, col := range m.Result {
         
         col = make([]int, cs, cs)
-        for i, _ := range col {
+        for i := range col {
             col[i] = m.newNum(766, 2434)
         }
         

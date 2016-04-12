@@ -28,3 +28,10 @@ func ReadLine(msg string) string {
        
     return string(buffer)
 }
+
+// Append 将src的切片追回到dst中
+func Append(dst, src []interface) {
+    for _, e := range src {
+        append(dst, e)
+    }
+}
