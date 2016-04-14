@@ -1,7 +1,6 @@
 package main
 
 import "fmt"
-import "unicode/utf8"
 import "deltatch/common"
 import "gostudy"
 import "gostudy/amusing"
@@ -10,7 +9,14 @@ func main() {
 
 	//basestudy()
 	//primeNumber()
+	//utf8Demo()
 
+	mat := new(amusing.MatrixConceal)
+	mat.Init()
+	fmt.Printf("矩阵藏宝图是：%v\r\n", mat.Result)
+}
+
+func utf8Demo() {
 	text := "hello,GO语言。"
 	buffer := common.TextToUtf8Bytes(text) //make([]byte, 0)
 
@@ -18,9 +24,8 @@ func main() {
 	buffer = []byte(text)
 	fmt.Printf("字符串UTF8编码形式（硬转码）：%v\r\n", buffer)
 
-	mat := new(amusing.MatrixConceal)
-	mat.Init()
-	fmt.Printf("矩阵藏宝图是：%v\r\n", mat.Result)
+	text = common.BytesToUft8Text(buffer)
+	fmt.Printf("字符串还原后：%v\r\n", text)
 }
 
 func primeNumber() {
