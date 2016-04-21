@@ -15,7 +15,7 @@ func main() {
 
 	mat := new(amusing.MatrixConceal)
 	mat.Init()
-	fmt.Printf("矩阵藏宝图是：%v\r\n", mat.Result)
+	//fmt.Printf("矩阵藏宝图是：%v\r\n", mat.Result)
 }
 
 func utf8Demo() {
