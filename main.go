@@ -11,7 +11,9 @@ func main() {
 	//primeNumber()
 	//utf8Demo()
 
-	gostudy.GoroutineEntry()
+	//gostudy.GoroutineEntry()
+	gostudy.GetBaidu()
+	gostudy.GetIPFromTaobao("8.8.8.8")
 
 	mat := new(amusing.MatrixConceal)
 	mat.Init()
