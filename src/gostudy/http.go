@@ -7,6 +7,7 @@ import "fmt"
 import "io/ioutil"
 import "net/http"
 import "encoding/json"
+import "github.com/bitly/go-simplejson"
 
 // GetBaidu 方法请求百度热度主页
 func GetBaidu() {
@@ -49,6 +50,26 @@ func GetIPFromTaobao(ip string) Taobaoip {
 	json.Unmarshal(buffer, &tip)
 
 	return tip
+}
+
+// GetIPFromTaobaoUseSimpjson 查询IP信息，并使用SimpleJSON解析
+func GetIPFromTaobaoUseSimpjson(ip string) *simplejson.Json {
+	url := "http://ip.taobao.com//service/getIpInfo.php?ip=" + ip
+
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("User-Agent", "Alphaiar-GO-Robot")
+	req.Header.Add("Sign", "Alphaair")
+
+	client := &http.Client{}
+	rsp, _ := client.Do(req)
+
+	jsdata, _ := simplejson.NewFromReader(rsp.Body)
+	defer rsp.Body.Close()
+
+	// var tip Taobaoip
+	// json.Unmarshal(buffer, &tip)
+
+	return jsdata
 }
 
 // Ipdetail 是淘宝开放IP数据库的一个查询结果明细

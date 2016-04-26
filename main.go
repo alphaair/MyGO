@@ -16,6 +16,9 @@ func main() {
 	tip := gostudy.GetIPFromTaobao("8.8.8.8")
 	fmt.Printf("8.8.8.8的IP信息是：%v\r\n.", tip)
 
+	jip := gostudy.GetIPFromTaobaoUseSimpjson("223.4.4.5")
+	fmt.Printf("223.4.4.5的IP信息是：%v\r\n.", jip)
+
 	mat := new(amusing.MatrixConceal)
 	mat.Init()
 	//fmt.Printf("矩阵藏宝图是：%v\r\n", mat.Result)
