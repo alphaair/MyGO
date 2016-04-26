@@ -40,8 +40,12 @@ func GetIPFromTaobao(ip string) Taobaoip {
 	client := &http.Client{}
 	rsp, _ := client.Do(req)
 
+	//buffer := []byte(`{"Code": 5, "Data": {"Country":"USA","Area":"Unkown","Owner":"Google"}}`)
 	buffer, _ := ioutil.ReadAll(rsp.Body)
-	tip := Taobaoip{}
+	defer rsp.Body.Close()
+
+	fmt.Println(string(buffer))
+	var tip Taobaoip
 	json.Unmarshal(buffer, &tip)
 
 	return tip
@@ -49,12 +53,12 @@ func GetIPFromTaobao(ip string) Taobaoip {
 
 // Ipdetail 是淘宝开放IP数据库的一个查询结果明细
 type Ipdetail struct {
-	Country string
-	Area    string
+	Atcountry string
+	Atarea    string
 }
 
 // Taobaoip 是淘宝开放IP数据库的一个查询结果
 type Taobaoip struct {
-	Code string
-	Data Ipdetail
+	ReCode int
+	Data   Ipdetail
 }

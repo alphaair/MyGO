@@ -13,7 +13,8 @@ func main() {
 
 	//gostudy.GoroutineEntry()
 	gostudy.GetBaidu()
-	gostudy.GetIPFromTaobao("8.8.8.8")
+	tip := gostudy.GetIPFromTaobao("8.8.8.8")
+	fmt.Printf("8.8.8.8的IP信息是：%v\r\n.", tip)
 
 	mat := new(amusing.MatrixConceal)
 	mat.Init()
