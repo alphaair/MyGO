@@ -13,11 +13,13 @@ func main() {
 
 	//gostudy.GoroutineEntry()
 	gostudy.GetBaidu()
-	tip := gostudy.GetIPFromTaobao("8.8.8.8")
-	fmt.Printf("8.8.8.8的IP信息是：%v\r\n.", tip)
+	ip := "223.5.5.5"
+	tip := gostudy.GetIPFromTaobao(ip)
+	fmt.Printf("%v的IP信息是：%+v。\r\n", ip, tip)
 
-	jip := gostudy.GetIPFromTaobaoUseSimpjson("223.4.4.5")
-	fmt.Printf("223.4.4.5的IP信息是：%v\r\n.", jip)
+	ip = "114.114.114.114"
+	jip := gostudy.GetIPFromTaobaoUseSimpjson(ip)
+	fmt.Printf("%v的IP信息是：%+v。\r\n", ip, jip)
 
 	mat := new(amusing.MatrixConceal)
 	mat.Init()

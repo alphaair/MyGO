@@ -74,12 +74,12 @@ func GetIPFromTaobaoUseSimpjson(ip string) *simplejson.Json {
 
 // Ipdetail 是淘宝开放IP数据库的一个查询结果明细
 type Ipdetail struct {
-	Atcountry string
-	Atarea    string
+	Country string `json:"country"`
+	Area    string `json:"area"`
 }
 
 // Taobaoip 是淘宝开放IP数据库的一个查询结果
 type Taobaoip struct {
-	ReCode int
-	Data   Ipdetail
+	Code int
+	Data Ipdetail `json:"data"`
 }
