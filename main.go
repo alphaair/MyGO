@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 import "deltatch/common"
+import "deltatch/cnregions"
 import "gostudy"
 import "gostudy/amusing"
 
@@ -11,7 +12,21 @@ func main() {
 	//primeNumber()
 	//utf8Demo()
 
+	node := new(cnregions.RegionNode)
+	node.PrevCode = "0001"
+	node.Code = "000101"
+	node.Name = "赣州市"
+	node.Category = cnregions.City
+	fmt.Printf("节点信息：%+v\r\n。", node)
+
 	//gostudy.GoroutineEntry()
+
+	//mat := new(amusing.MatrixConceal)
+	//mat.Init()
+	//fmt.Printf("矩阵藏宝图是：%v\r\n", mat.Result)
+}
+
+func jsonDemo() {
 	gostudy.GetBaidu()
 	ip := "223.5.5.5"
 	tip := gostudy.GetIPFromTaobao(ip)
@@ -20,10 +35,6 @@ func main() {
 	ip = "114.114.114.114"
 	jip := gostudy.GetIPFromTaobaoUseSimpjson(ip)
 	fmt.Printf("%v的IP信息是：%+v。\r\n", ip, jip)
-
-	mat := new(amusing.MatrixConceal)
-	mat.Init()
-	//fmt.Printf("矩阵藏宝图是：%v\r\n", mat.Result)
 }
 
 func utf8Demo() {
