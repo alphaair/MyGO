@@ -12,12 +12,12 @@ func main() {
 	//primeNumber()
 	//utf8Demo()
 
-	node := new(cnregions.RegionNode)
-	node.PrevCode = "0001"
-	node.Code = "000101"
-	node.Name = "赣州市"
-	node.Category = cnregions.City
-	fmt.Printf("节点信息：%+v\r\n。", node)
+	provider := cnregions.NewNbsDsProvider()
+	provs := provider.GetProvinces()
+	fmt.Println("从国家统计局获取的省份数据：\r\n")
+	for _, n := range provs {
+		fmt.Printf("%+v\r\n", *n)
+	}
 
 	//gostudy.GoroutineEntry()
 
