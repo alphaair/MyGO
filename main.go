@@ -13,7 +13,11 @@ func main() {
 	//utf8Demo()
 
 	provider := cnregions.NewNbsDsProvider()
-	provs := provider.GetProvinces()
+	provs, err := provider.GetProvinces()
+	if err != nil {
+		fmt.Printf("爬取失败，详细：%+v", err)
+		return
+	}
 	fmt.Println("从国家统计局获取的省份数据：\r\n")
 	for _, n := range provs {
 		fmt.Printf("%+v\r\n", *n)
