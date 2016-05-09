@@ -2,7 +2,8 @@ package main
 
 import "fmt"
 import "deltatch/common"
-import "deltatch/cnregions"
+
+//import "deltatch/cnregions"
 import "gostudy"
 import "gostudy/amusing"
 
@@ -11,17 +12,17 @@ func main() {
 	//basestudy()
 	//primeNumber()
 	//utf8Demo()
-
-	provider := cnregions.NewNbsDsProvider()
-	provs, err := provider.GetProvinces()
-	if err != nil {
-		fmt.Printf("爬取失败，详细：%+v", err)
-		return
-	}
-	fmt.Println("从国家统计局获取的省份数据：\r\n")
-	for _, n := range provs {
-		fmt.Printf("%+v\r\n", *n)
-	}
+	amusing.LuckyStarSim(10, 20, 100)
+	// provider := cnregions.NewNbsDsProvider()
+	// provs, err := provider.GetProvinces()
+	// if err != nil {
+	// 	fmt.Printf("爬取失败，详细：%+v", err)
+	// 	return
+	// }
+	// fmt.Println("从国家统计局获取的省份数据：\r\n")
+	// for _, n := range provs {
+	// 	fmt.Printf("%+v\r\n", *n)
+	// }
 
 	//gostudy.GoroutineEntry()
 
