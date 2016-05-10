@@ -79,4 +79,5 @@ src/github.com/
 src/9fans.net/
 src/sourcegraph.com/
 src/golang.org/
+*.log
 

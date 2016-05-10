@@ -12,7 +12,18 @@ func main() {
 	//basestudy()
 	//primeNumber()
 	//utf8Demo()
-	amusing.LuckyStarSim(10, 20, 100)
+	ws := 0
+	var ps float32 = 0.00
+	bs := 0
+
+	for i := 0; i < 5; i++ {
+		w, p, b := amusing.LuckyStarSim(10, 4, 12, 10)
+		ws += w
+		ps += p
+		bs += b
+	}
+	fmt.Printf("%v,%v,%v", ws, ps/5, bs/5)
+
 	// provider := cnregions.NewNbsDsProvider()
 	// provs, err := provider.GetProvinces()
 	// if err != nil {
