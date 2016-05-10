@@ -79,5 +79,6 @@ src/github.com/
 src/9fans.net/
 src/sourcegraph.com/
 src/golang.org/
+src/gopkg.in
 *.log
 
