@@ -17,7 +17,7 @@ func main() {
 	bs := 0
 
 	for i := 0; i < 5; i++ {
-		w, p, b := amusing.LuckyStarSim(10, 4, 12, 10)
+		w, p, b := amusing.LuckyStarSim(10, 50, 6, 10)
 		ws += w
 		ps += p
 		bs += b
