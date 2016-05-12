@@ -53,7 +53,7 @@ func TextToUtf8Bytes(text string) []byte {
 	return buffer
 }
 
-// BytesToUtf8String 将UTF8编码的字节数组还原成相应的字符串
+// BytesToUft8Text 将UTF8编码的字节数组还原成相应的字符串
 func BytesToUft8Text(buffer []byte) string {
 	var tmp []rune
 
