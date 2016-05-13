@@ -93,16 +93,16 @@ func (slef *NbsDsProvider) requestHtml(url string) (io.Reader, error) {
 }
 
 // extractNum 从text提取出连续的数字
-func (slef *NbsDsProvider) extractNum(text string) string {
+func (self *NbsDsProvider) extractNum(text string) string {
 	reg := regexp.MustCompile(`\d+`)
 	return reg.FindString(text)
 }
 
 // GetProvinces 获取所有省级行政区域节点
-func (my *NbsDsProvider) GetProvinces() ([]*RegionNode, error) {
+func (self *NbsDsProvider) GetProvinces() ([]*RegionNode, error) {
 
 	const url string = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2014/index.html"
-	rd, err := my.requestHtml(url)
+	rd, err := self.requestHtml(url)
 	if err != nil {
 		return nil, errors.New("请求失败，详细信息：" + err.Error())
 	}
@@ -121,7 +121,7 @@ func (my *NbsDsProvider) GetProvinces() ([]*RegionNode, error) {
 		regnode := new(RegionNode)
 		regnode.Category = Province
 		regnode.PrevCode = "0"
-		regnode.Code = my.extractNum(href)
+		regnode.Code = self.extractNum(href)
 		regnode.Name = pe.Text()
 
 		//provs = append(provs, regnode)
