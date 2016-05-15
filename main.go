@@ -14,7 +14,7 @@ func main() {
 	//utf8Demo()
 
 	provider := cnregions.NewNbsDsProvider()
-	provs, err := provider.GetProvinces()
+	provs, err := provider.GetVillage("360721104")
 	if err != nil {
 		fmt.Printf("爬取失败，详细：%+v", err)
 		return

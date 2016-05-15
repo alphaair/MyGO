@@ -4,59 +4,17 @@
 package cnregions
 
 import (
+	dio "deltatch/io"
 	"errors"
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/guotie/gogb2312"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strings"
 )
-
-type MemoryStream struct {
-	//暂存数据流
-	buffer   []byte
-	Length   int
-	Position int
-}
-
-// NewMemoryStream 以指定大小初始化一个内存数据流
-func NewMemoryStream(size int) *MemoryStream {
-	stream := new(MemoryStream)
-	stream.buffer = make([]byte, size)
-
-	return stream
-}
-
-// Read 读取内存数据流的数据到p
-func (self *MemoryStream) Read(p []byte) (n int, err error) {
-
-	if self.Length == 0 || self.Position+1 >= self.Length {
-		return 0, io.EOF
-	}
-
-	cp := 0
-	for i, _ := range p {
-		self.Position++
-		if self.Position >= self.Length {
-			break
-		}
-		p[i] = self.buffer[self.Position]
-		cp++
-	}
-
-	return cp, nil
-}
-
-// Write 将数据p写入到内存流中
-func (self *MemoryStream) Write(p []byte) (n int, err error) {
-
-	self.buffer = p
-	self.Length = len(p)
-	self.Position = -1
-
-	return len(p), nil
-}
 
 // NbsDsProvider 国家统计局数据源提供程序
 type NbsDsProvider struct {
@@ -86,7 +44,7 @@ func (slef *NbsDsProvider) requestHtml(url string) (io.Reader, error) {
 		return nil, errors.New("GB2312编码转换失败，详细信息：" + err.Error())
 	}
 
-	rd := NewMemoryStream(256)
+	rd := dio.NewMemoryStream(256)
 	rd.Write(buffer)
 
 	return rd, nil
@@ -94,6 +52,11 @@ func (slef *NbsDsProvider) requestHtml(url string) (io.Reader, error) {
 
 // extractNum 从text提取出连续的数字
 func (self *NbsDsProvider) extractNum(text string) string {
+	i := strings.LastIndex(text, "/")
+	if i > -1 {
+		text = text[i+1:]
+	}
+
 	reg := regexp.MustCompile(`\d+`)
 	return reg.FindString(text)
 }
@@ -129,4 +92,178 @@ func (self *NbsDsProvider) GetProvinces() ([]*RegionNode, error) {
 	})
 
 	return provs, nil
+}
+
+// GetCitys 获取指定省份的地级市
+func (self *NbsDsProvider) GetCitys(code string) ([]*RegionNode, error) {
+
+	url := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2014/{code}.html"
+	url = strings.Replace(url, "{code}", code, 1)
+
+	rd, err := self.requestHtml(url)
+	if err != nil {
+		return nil, errors.New("请求失败，详细信息：" + err.Error())
+	}
+
+	//doc, err := goquery.NewDocument(url)
+	doc, err := goquery.NewDocumentFromReader(rd)
+	if err != nil {
+		return nil, errors.New("HTML文档渲染失败：" + err.Error())
+	}
+
+	citys := make([]*RegionNode, 0)
+	doc.Find("tr.citytr").Each(func(i int, pe *goquery.Selection) {
+
+		hfs := pe.Find("a")
+		if hfs.Length() == 0 {
+			//无下级时，即没有a标签
+			hfs = pe.Find("td")
+		}
+
+		regnode := new(RegionNode)
+		regnode.Category = City
+		regnode.PrevCode = code
+		regnode.Code, _ = hfs.First().Attr("href")
+		regnode.Code = self.extractNum(regnode.Code)
+		regnode.Name = hfs.Last().Text()
+
+		citys = append(citys, regnode)
+		//provs[i] = regnode
+	})
+
+	return citys, nil
+}
+
+// GetCountys 获取指定市级份的县级市
+func (self *NbsDsProvider) GetCountys(code string) ([]*RegionNode, error) {
+
+	url := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2014/{pcode}/{ccode}.html"
+	url = strings.Replace(url, "{pcode}", code[0:2], 1)
+	url = strings.Replace(url, "{ccode}", code, 1)
+
+	rd, err := self.requestHtml(url)
+	if err != nil {
+		return nil, errors.New("请求失败，详细信息：" + err.Error())
+	}
+
+	doc, err := goquery.NewDocumentFromReader(rd)
+	if err != nil {
+		return nil, errors.New("HTML文档渲染失败：" + err.Error())
+	}
+
+	trs := doc.Find("tr.countytr")
+	if trs.Length() == 0 {
+		//部地级市直管镇，如东莞，中山
+		trs = doc.Find("tr.towntr")
+	}
+
+	countys := make([]*RegionNode, trs.Length())
+	trs.Each(func(i int, pe *goquery.Selection) {
+
+		regnode := new(RegionNode)
+		regnode.Category = County
+		regnode.PrevCode = code
+
+		hfs := pe.Find("a")
+		if hfs.Length() == 0 {
+			//无下级时，即没有a标签
+			hfs = pe.Find("td")
+			regnode.Code = hfs.First().Text()
+		} else {
+			regnode.Code, _ = hfs.First().Attr("href")
+			regnode.Code = self.extractNum(regnode.Code)
+		}
+		regnode.Name = hfs.Last().Text()
+
+		countys[i] = regnode
+	})
+
+	return countys, nil
+}
+
+// GetTowns 获取指定县级份的镇（乡）社区
+func (self *NbsDsProvider) GetTowns(code string) ([]*RegionNode, error) {
+
+	url := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2014/{pcode}/{ccode}/{ctcode}.html"
+	url = strings.Replace(url, "{pcode}", code[0:2], 1)
+	url = strings.Replace(url, "{ccode}", code[2:4], 1)
+	url = strings.Replace(url, "{ctcode}", code, 1)
+
+	rd, err := self.requestHtml(url)
+	if err != nil {
+		return nil, errors.New("请求失败，详细信息：" + err.Error())
+	}
+
+	doc, err := goquery.NewDocumentFromReader(rd)
+	if err != nil {
+		return nil, errors.New("HTML文档渲染失败：" + err.Error())
+	}
+
+	trs := doc.Find("tr.towntr")
+	if trs.Length() == 0 {
+		trs = doc.Find("tr.villagetr")
+	}
+
+	countys := make([]*RegionNode, trs.Length())
+	trs.Each(func(i int, pe *goquery.Selection) {
+
+		regnode := new(RegionNode)
+		regnode.Category = Town
+		regnode.PrevCode = code
+
+		hfs := pe.Find("a")
+		if hfs.Length() == 0 {
+			//无下级时，即没有a标签
+			hfs = pe.Find("td")
+			regnode.Code = hfs.First().Text()
+		} else {
+			regnode.Code, _ = hfs.First().Attr("href")
+			regnode.Code = self.extractNum(regnode.Code)
+		}
+
+		regnode.Name = hfs.Last().Text()
+
+		countys[i] = regnode
+	})
+
+	return countys, nil
+}
+
+// GetTowns 获取指定镇级份的村、居委会
+func (self *NbsDsProvider) GetVillage(code string) ([]*RegionNode, error) {
+
+	url := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2014/{pcode}/{ccode}/{ctcode}/{tcode}.html"
+	url = strings.Replace(url, "{pcode}", code[0:2], 1)
+	url = strings.Replace(url, "{ccode}", code[2:4], 1)
+	url = strings.Replace(url, "{ctcode}", code[4:6], 1)
+	url = strings.Replace(url, "{tcode}", code, 1)
+
+	fmt.Println(url)
+	rd, err := self.requestHtml(url)
+	if err != nil {
+		return nil, errors.New("请求失败，详细信息：" + err.Error())
+	}
+
+	doc, err := goquery.NewDocumentFromReader(rd)
+	if err != nil {
+		return nil, errors.New("HTML文档渲染失败：" + err.Error())
+	}
+
+	trs := doc.Find("tr.villagetr")
+
+	countys := make([]*RegionNode, trs.Length())
+	trs.Each(func(i int, pe *goquery.Selection) {
+
+		regnode := new(RegionNode)
+		regnode.Category = Village
+		regnode.PrevCode = code
+
+		hfs := pe.Find("td")
+		regnode.Code = hfs.First().Text()
+		regnode.Name = hfs.Last().Text()
+
+		countys[i] = regnode
+	})
+
+	return countys, nil
 }
