@@ -153,7 +153,7 @@ func (self *NbsDsProvider) GetCountys(code string) ([]*RegionNode, error) {
 
 	trs := doc.Find("tr.countytr")
 	if trs.Length() == 0 {
-		//部地级市直管镇，如东莞，中山
+		//部分地级市直管镇，如东莞，中山
 		trs = doc.Find("tr.towntr")
 	}
 
